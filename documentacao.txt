@@ -1,0 +1,6 @@
+ETAPAS
+1. Preparação do ambiente:
+    iniciar node, instalar express, cors, dotenv, nodemon
+    
+Desafios
+
