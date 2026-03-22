@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const pool = require('./config/database');
 const postRoutes = require('./routes/postRoutes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./docs/swagger');
 
 const app = express();
 
@@ -9,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/posts', postRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
     res.send({ message: 'API do Tech Challenge funcionando!' });
