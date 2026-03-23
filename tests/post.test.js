@@ -21,6 +21,18 @@ describe('Testes de Posts', () => {
         expect(Array.isArray(response.body)).toBe(true);
     });
 
+    it('Deve retornar erro ao criar post com dados inválidos', async () => {
+        const response = await request(app)
+            .post('/posts')
+            .send({
+                title: '',
+                content: '',
+                author: ''
+            });
+        expect(response.statusCode).toBe(400);
+    });
+
+
     afterAll(async () => {
         await pool.end();
     });
