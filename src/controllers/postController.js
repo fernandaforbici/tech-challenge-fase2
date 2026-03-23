@@ -1,102 +1,60 @@
-const postRepository = require('../repositories/postRepository');
+const postService = require('../services/postServices');
 
-const createPost = async (req, res) => {
+const createPost = async (req, res, next) => {
     try {
-        const { title, content, author } = req.body;
-
-        if (!title || !content || !author) {
-            return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
-        }
-
-        const post = await postRepository.create({ title, content, author });
-
-        return res.status(201).json({ message: 'Post criado com sucesso.', post });
+        const result = await postService.createPost(req.body);
+        return res.status(201).json(result);
     } catch (error) {
-        console.error('Erro ao criar post:', error);
-        return res.status(500).json({ error: 'Erro interno ao criar post.' });
+        next(error);
 
     }
 
 }
-const getAllPosts = async (req, res) => {
+
+const getAllPosts = async (req, res, next) => {
     try {
-        const posts = await postRepository.findAll();
+        const posts = await postService.getAllPosts();
         return res.status(200).json(posts);
     } catch (error) {
-        console.error('Erro ao buscar posts:', error);
-        return res.status(500).json({ error: 'Erro interno ao buscar posts.' });
+        next(error);
     }
 };
 
-const getPostById = async (req, res) => {
+const getPostById = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const post = await postRepository.findById(id);
-
-        if (!post) {
-            return res.status(404).json({ error: 'Post não encontrado.' });
-        }
+        const post = await postService.getPostById(req.params.id);
         return res.status(200).json(post);
+
     } catch (error) {
-        console.error('Erro ao buscar post por id:', error);
-        return res.status(500).json({ error: 'Erro interno ao buscar post.' });
+        next(error);
     }
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { title, content, author } = req.body;
-
-        if (!title || !content || !author) {
-            return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
-        }
-        const post = await postRepository.update(id, { title, content, author });
-
-        if (!post) {
-            return res.status(404).json({ error: 'Post não encontrado.' });
-        }
-        return res.status(200).json({
-            message: 'Post atualizado com sucesso.',
-            post
-        });
+        const result = await postService.updatePost(req.params.id, req.body);
+        return res.status(200).json(result);
     } catch (error) {
-        console.error('Erro ao atualizar post:', error);
-        return res.status(500).json({ error: 'Erro interno ao atualizar post.' });
+        next(error);
     }
 };
 
 const deletePost = async (req, res) => {
     try {
-        const { id } = req.params;
-        const post = await postRepository.remove(id);
-
-        if (!post) {
-            return res.status(404).json({ error: 'Post não encontrado.' });
-        }
-
-        return res.status(200).json({
-            message: 'Post excluído com sucesso.',
-            post
-        });
+        const result = await postService.deletePost(req.params.id);
+        return res.status(200).json(result);
     } catch (error) {
-        console.error('Erro ao excluir post:', error);
-        return res.status(500).json({ error: 'Erro interno ao excluir post.' });
+        next(error);
     }
 };
 
-const searchPosts = async (req, res) => {
+const searchPosts = async (req, res, next) => {
     try {
-        const { q } = req.query;
-        if (!q) {
-            return res.status(400).json({ error: 'Parâmetro de busca é obrigatório.' });
-        }
 
-        const posts = await postRepository.search(q);
+        const posts = await postService.searchPosts(req.query.q);
         return res.status(200).json(posts);
     } catch (error) {
-        console.error('Erro ao buscar post por id:', error);
-        return res.status(500).json({ error: 'Erro interno ao buscar post.' });
+        next(error);
     }
 }
 
