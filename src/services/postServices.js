@@ -10,7 +10,11 @@ const validateRequiredFields = ({ title, content, author }) => {
 const createPost = async ({ title, content, author }) => {
     validateRequiredFields({ title, content, author });
 
-    const post = await postRepository.create({ title, content, author });
+    const post = await postRepository.create({
+        title: title.trim(),
+        content: content.trim(),
+        author: author.trim()
+    });
     return {
         message: 'Post criado com sucesso.',
         post
@@ -32,7 +36,11 @@ const getPostById = async (id) => {
 
 const updatePost = async (id, { title, content, author }) => {
     validateRequiredFields({ title, content, author });
-    const post = await postRepository.update(id, { title, content, author });
+    const post = await postRepository.update(id, {
+        title: title.trim(),
+        content: content.trim(),
+        author: author.trim()
+    });
     if (!post) {
         throw new AppError('Post não encontrado.', 404);
     }

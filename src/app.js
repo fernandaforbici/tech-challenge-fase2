@@ -6,6 +6,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler');
+const notFound = require('./middlewares/notFound');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.get('/', (req, res) => {
     res.send({ message: 'API do Tech Challenge funcionando!' });
 });
 app.use(routes);
+app.use(notFound);
+
 
 app.get('/db-test', async (req, res) => {
     try {
