@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createPost,
-    getAllPosts,
-    getPostById,
-    updatePost,
-    deletePost,
-    searchPosts,
-} = require('../controllers/postController');
+const postController = require('../controllers/postController');
 
 /**
  * @swagger
@@ -70,7 +64,7 @@ const { createPost,
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', createPost);
+router.post('/', postController.createPost);
 /**
  * @swagger
  * /posts:
@@ -87,7 +81,7 @@ router.post('/', createPost);
  *               items:
  *                 $ref: '#/components/schemas/Post'
  */
-router.get('/', getAllPosts);
+router.get('/', postController.getAllPosts);
 /**
  * @swagger
  * /posts/search:
@@ -113,7 +107,7 @@ router.get('/', getAllPosts);
  *       400:
  *         description: Parâmetro de busca ausente
  */
-router.get('/search', searchPosts);
+router.get('/search', postController.searchPosts);
 /**
  * @swagger
  * /posts/{id}:
@@ -136,7 +130,7 @@ router.get('/search', searchPosts);
  *       404:
  *         description: Post não encontrado
  */
-router.get('/:id', getPostById);
+router.get('/:id', postController.getPostById);
 /**
  * @swagger
  * /posts/{id}:
@@ -172,7 +166,7 @@ router.get('/:id', getPostById);
  *       404:
  *         description: Post não encontrado
  */
-router.put('/:id', updatePost);
+router.put('/:id', postController.updatePost);
 /**
  * @swagger
  * /posts/{id}:
@@ -191,6 +185,6 @@ router.put('/:id', updatePost);
  *       404:
  *         description: Post não encontrado
  */
-router.delete('/:id', deletePost);
+router.delete('/:id', postController.deletePost);
 
 module.exports = router;

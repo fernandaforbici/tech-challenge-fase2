@@ -32,6 +32,11 @@ describe('Testes de Posts', () => {
         expect(response.statusCode).toBe(400);
     });
 
+    it('Deve buscar posts por termo', async () => {
+        const response = await request(app).get('/posts/search?q=Teste');
+        expect(response.statusCode).toBe(200);
+        expect(Array.isArray(response.body)).toBe(true);
+    });
 
     afterAll(async () => {
         await pool.end();

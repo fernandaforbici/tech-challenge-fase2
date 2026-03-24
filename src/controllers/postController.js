@@ -39,7 +39,7 @@ const updatePost = async (req, res, next) => {
     }
 };
 
-const deletePost = async (req, res) => {
+const deletePost = async (req, res, next) => {
     try {
         const result = await postService.deletePost(req.params.id);
         return res.status(200).json(result);
@@ -50,8 +50,8 @@ const deletePost = async (req, res) => {
 
 const searchPosts = async (req, res, next) => {
     try {
-
-        const posts = await postService.searchPosts(req.query.q);
+        const term = req.query.q;
+        const posts = await postService.searchPosts(term);
         return res.status(200).json(posts);
     } catch (error) {
         next(error);

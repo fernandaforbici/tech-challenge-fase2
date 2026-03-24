@@ -1,10 +1,9 @@
 const postRepository = require('../repositories/postRepository');
+const AppError = require('../utils/AppError');
 
 const validateRequiredFields = ({ title, content, author }) => {
     if (!title || !content || !author) {
-        const error = new Error('Todos os campos são obrigatórios');
-        error.statusCode = 400;
-        throw error;
+        throw new AppError('Todos os campos são obrigatórios', 400);
     }
 };
 
@@ -26,9 +25,7 @@ const getAllPosts = async () => {
 const getPostById = async (id) => {
     const post = await postRepository.findById(id);
     if (!post) {
-        const error = new Error('Post não encontrado.');
-        error.statusCode = 404;
-        throw error;
+        throw new AppError('Post não encontrado.', 404);
     }
     return post;
 };
@@ -37,9 +34,7 @@ const updatePost = async (id, { title, content, author }) => {
     validateRequiredFields({ title, content, author });
     const post = await postRepository.update(id, { title, content, author });
     if (!post) {
-        const error = new Error('Post não encontrado.');
-        error.statusCode = 404;
-        throw error;
+        throw new AppError('Post não encontrado.', 404);
     }
     return {
         message: 'Post atualizado com sucesso.',
@@ -50,9 +45,7 @@ const updatePost = async (id, { title, content, author }) => {
 const deletePost = async (id) => {
     const post = await postRepository.remove(id);
     if (!post) {
-        const error = new Error('Post não encontrado.');
-        error.statusCode = 404;
-        throw error;
+        throw new AppError('Post não encontrado.', 404);
     }
     return {
         message: 'Post excluído com sucesso.',
@@ -61,12 +54,12 @@ const deletePost = async (id) => {
 };
 
 const searchPosts = async (term) => {
-    if (!term) {
-        const error = new Error('Parâmetro de busca é obrigatório.');
-        error.statusCode = 400;
-        throw error;
+    console.log('Termo de busca:', term);
+    const normalizedTerm = term ? term.trim() : '';
+    if (!normalizedTerm) {
+        throw new AppError('Parâmetro de busca é obrigatório.', 400);
     }
-    return await postRepository.search(term);
+    return await postRepository.search(normalizedTerm);
 };
 
 module.exports = {

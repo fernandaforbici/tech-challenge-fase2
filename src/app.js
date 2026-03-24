@@ -4,18 +4,20 @@ const pool = require('./config/database');
 const postRoutes = require('./routes/postRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
+const routes = require('./routes');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/posts', postRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
     res.send({ message: 'API do Tech Challenge funcionando!' });
 });
+app.use(routes);
 
 app.get('/db-test', async (req, res) => {
     try {
@@ -30,7 +32,6 @@ app.get('/db-test', async (req, res) => {
     }
 });
 
-const errorHandler = require('./middlewares/errorHandler');
 app.use(errorHandler);
 
 module.exports = app;
