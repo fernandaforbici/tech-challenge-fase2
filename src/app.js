@@ -7,17 +7,32 @@ const swaggerSpec = require('./docs/swagger');
 const routes = require('./routes');
 const errorHandler = require('./middlewares/errorHandler');
 const notFound = require('./middlewares/notFound');
+const httpLogger = require('./middlewares/httpLogger');
+const metricsMiddleware = require('./middlewares/metricsMiddleware');
+const { register } = require('./config/metrics');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(httpLogger);
+app.use(metricsMiddleware);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (req, res) => {
     res.send({ message: 'API do Tech Challenge funcionando!' });
 });
+app.get('/metrics', async (req, res) => {
+    try {
+        res.set('Content-Type', register.contentType);
+        res.end(await register.metrics());
+    } catch (error) {
+        res.status(500).end(error);
+    }
+});
+
+
 app.use(routes);
 app.use(notFound);
 
